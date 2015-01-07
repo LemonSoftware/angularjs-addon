@@ -99,7 +99,7 @@ public class AngularScaffoldProvider implements ScaffoldProvider
    @Override
    public String getName()
    {
-      return "ExtJS-Forked";
+      return "ExtJS5";
    }
 
    @Override
@@ -192,7 +192,7 @@ public class AngularScaffoldProvider implements ScaffoldProvider
          if (entityResourcePath == null || entityResourcePath.isEmpty())
          {
             //TODO: throw exception until the proper behaviour identified.
-            throw new ExtJSException("No Resources found for entity ["+entityName+"]");
+            throw new ExtJSException("No Rest Resources found for entity ["+entityName+"], Please Generate the Rest resources first");
 //            entityResourcePath = inflector.pluralize(entityName.toLowerCase());
          }
          entityResourcePath = trimSlashes(entityResourcePath);

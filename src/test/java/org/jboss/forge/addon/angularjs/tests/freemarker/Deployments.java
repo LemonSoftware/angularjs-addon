@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
@@ -21,30 +22,19 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 
 public class Deployments {
 
-    static Properties properties;
+     static Path tmpPath;
 
-
-    public static String getProperty(String key) {
+    static{
         try {
-            if (properties == null) {
-                properties = new Properties();
-                properties.load(Deployments.class.getClassLoader().getResourceAsStream("test.properties"));
-            }
+             tmpPath = Files.createTempDirectory(Paths.get(System.getProperty("user.dir")), "tmp-generated");
         } catch (IOException e) {
-            throw new ExtJSException("Error reading test properties", e);
+            System.err.println("Failed to create tmp dir: "+e.getMessage());
         }
-        return (String) properties.get(key);
     }
 
-    public static void writeToTemp(String output, String fileName) throws IOException {
 
-        if (!Files.exists(Paths.get(Deployments.getProperty("project.tmp")))) {
-            throw new ExtJSException("The temp directory configured [" + Deployments.getProperty("project.tmp") + "] is not correct, please " +
-                    "set the proper path in the test.properties, this path is used to write the output of the freemarker's generated web content" +
-                    " for manual verification.");
-        } else {
-            IOUtils.write(output, new FileOutputStream(Deployments.getProperty("project.tmp") + fileName));
-        }
+    public static void writeToTemp(String output, String fileName) throws IOException {
+        IOUtils.write(output, new FileOutputStream(tmpPath + "/" + fileName));
 
     }
 
@@ -54,11 +44,11 @@ public class Deployments {
                 .addClass(Deployments.class)
                 .addClass(DetailTemplateStrategy.class)
                 .addClass(InspectionResultMatcher.class)
-				.addAsLibrary(Maven.resolver().resolve("org.jsoup:jsoup:1.7.1").withTransitivity().asSingleFile())
-				.addPackage(AngularScaffoldProvider.class.getPackage())
+                .addAsLibrary(Maven.resolver().resolve("org.jsoup:jsoup:1.7.1").withTransitivity().asSingleFile())
+                .addPackage(AngularScaffoldProvider.class.getPackage())
 				.addPackage(TestHelpers.class.getPackage())
                 .addClass(RestResourceTypeVisitor.class)
-				.addAsResources(Deployments.BASE_PACKAGE,
+                .addAsResources(Deployments.BASE_PACKAGE,
                         INDEX_FTL_HTML,
                         JS_ENTITY_FTL_CONTROLLER,
                         JS_ENTITY_FTL_MODEL,
