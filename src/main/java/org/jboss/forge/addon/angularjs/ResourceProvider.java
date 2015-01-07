@@ -51,13 +51,13 @@ public class ResourceProvider {
     public  static final String JS_ENTITY_FTL_VIEW = JS_FOLDER+"/view/entityGrid.js.ftl";
 
     /**
-     * Provides a list of {@link org.jboss.forge.addon.ScaffoldResource}s representing static files that are to be copied upon scaffolding setup.
+     * Provides a list of {@link org.jboss.forge.addon.angularjs.ScaffoldResource}s representing static files that are to be copied upon scaffolding setup.
      *
      * @param targetDir The target directory that serves as the root directory of the destination for the generated resources to
      *        be copied to.
-     * @param strategy The {@link org.jboss.forge.addon.ProcessingStrategy} to use for processing the static file. Usually this involves a strategy to copy
+     * @param strategy The {@link org.jboss.forge.addon.angularjs.ProcessingStrategy} to use for processing the static file. Usually this involves a strategy to copy
      *        files from a source to destination.
-     * @return A list of {@link org.jboss.forge.addon.ScaffoldResource}s representing static files that are to be copied upon scaffolding setup.
+     * @return A list of {@link org.jboss.forge.addon.angularjs.ScaffoldResource}s representing static files that are to be copied upon scaffolding setup.
      */
     public static List<ScaffoldResource> getStatics(String targetDir, ProcessingStrategy strategy) {
         List<ScaffoldResource> statics = new ArrayList<>();
