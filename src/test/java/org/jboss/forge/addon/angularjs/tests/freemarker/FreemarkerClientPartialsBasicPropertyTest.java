@@ -34,6 +34,7 @@ import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.jboss.forge.addon.angularjs.TestHelpers.*;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests to verify that the generated HTML for basic properties of JPA entities are generated correctly.
@@ -65,7 +66,7 @@ public class FreemarkerClientPartialsBasicPropertyTest {
     public void testGenerateHiddenProperty() throws Exception {
         Map<String, Object> root = createInspectionResultWrapper(ENTITY_NAME, ENTITY_VERSION_PROP);
 
-        Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL_INCLUDE));
+        Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL));
         Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
         assertThat(output.trim(), IsEqual.equalTo(""));
@@ -75,7 +76,7 @@ public class FreemarkerClientPartialsBasicPropertyTest {
     public void testGenerateHiddenAndRequiredProperty() throws Exception {
         Map<String, Object> root = createInspectionResultWrapper(ENTITY_NAME, ENTITY_ID_PROP);
 
-        Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL_INCLUDE));
+        Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL));
         Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
         assertThat(output.trim(), IsEqual.equalTo(""));
@@ -85,200 +86,28 @@ public class FreemarkerClientPartialsBasicPropertyTest {
     public void testGenerateBasicStringProperty() throws Exception {
         Map<String, Object> root = createInspectionResultWrapper(ENTITY_NAME, BASIC_STRING_PROP);
 
-        Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL_INCLUDE));
+        Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL));
         Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
-        Document html = Jsoup.parseBodyFragment(output);
-        assertThat(output.trim(), not(equalTo("")));
-        
-        Elements container = html.select("div.form-group");
-        assertThat(container, notNullValue());
-        assertThat(container.attr("ng-class"), not(equalTo("")));
-        
-        Elements formInputElement = html.select("div.form-group input");
-        assertThat(formInputElement.attr("id"), equalTo("fullName"));
-        assertThat(formInputElement.attr("type"), equalTo("text"));
-        assertThat(formInputElement.attr("ng-model"), equalTo(StringUtils.camelCase(ENTITY_NAME)+"."+"fullName"));
+
+
+        assertTrue(output.contains("header:"));
+        assertTrue(output.contains("fullName"));
+
+
     }
 
-    @Test
-    public void testGenerateBasicStringPropertyWithMaxlength() throws Exception {
-        Map<String, Object> root = createInspectionResultWrapper(ENTITY_NAME, STRING_PROP_WITH_MAX_LEN);
 
-        Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL_INCLUDE));
-        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
-        String output = processor.process(root);
-        Document html = Jsoup.parseBodyFragment(output);
-        assertThat(output.trim(), not(equalTo("")));
-        
-        Elements container = html.select("div.form-group");
-        assertThat(container, notNullValue());
-        assertThat(container.attr("ng-class"), not(equalTo("")));
-        
-        Elements formInputElement = html.select("div.form-group input");
-        assertThat(formInputElement.attr("id"), equalTo("fullName"));
-        assertThat(formInputElement.attr("type"), equalTo("text"));
-        assertThat(formInputElement.attr("ng-model"), equalTo(StringUtils.camelCase(ENTITY_NAME)+"."+"fullName"));
-        assertThat(formInputElement.attr("ng-maxlength"), equalTo("100"));
-    }
-    
-    @Test
-    public void testGenerateBasicStringPropertyWithMinlength() throws Exception {
-        Map<String, Object> root = createInspectionResultWrapper(ENTITY_NAME, STRING_PROP_WITH_MIN_LEN);
-
-        Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL_INCLUDE));
-        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
-        String output = processor.process(root);
-        Document html = Jsoup.parseBodyFragment(output);
-        assertThat(output.trim(), not(equalTo("")));
-        
-        Elements container = html.select("div.form-group");
-        assertThat(container, notNullValue());
-        assertThat(container.attr("ng-class"), not(equalTo("")));
-        
-        Elements formInputElement = html.select("div.form-group input");
-        assertThat(formInputElement.attr("id"), equalTo("fullName"));
-        assertThat(formInputElement.attr("type"), equalTo("text"));
-        assertThat(formInputElement.attr("ng-model"), equalTo(StringUtils.camelCase(ENTITY_NAME)+"."+"fullName"));
-        assertThat(formInputElement.attr("ng-minlength"), equalTo("5"));
-    }
-    
     @Test
     public void testGenerateBasicNumberProperty() throws Exception {
         Map<String, Object> root = createInspectionResultWrapper(ENTITY_NAME, NUMBER_PROP);
 
-        Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL_INCLUDE));
+        Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL));
         Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
-        Document html = Jsoup.parseBodyFragment(output);
-        assertThat(output.trim(), not(equalTo("")));
-        
-        Elements container = html.select("div.form-group");
-        assertThat(container, notNullValue());
-        assertThat(container.attr("ng-class"), not(equalTo("")));
-        
-        Elements formInputElement = html.select("div.form-group input");
-        assertThat(formInputElement.attr("id"), equalTo("score"));
-        assertThat(formInputElement.attr("type"), equalTo("number"));
-        assertThat(formInputElement.attr("ng-model"), equalTo(StringUtils.camelCase(ENTITY_NAME)+"."+"score"));
-    }
-    
-    @Test
-    public void testGenerateBasicNumberPropertyWithMinConstraint() throws Exception {
-        Map<String, Object> root = createInspectionResultWrapper(ENTITY_NAME, NUMBER_PROP_WITH_MIN_VAL);
 
-        Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL_INCLUDE));
-        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
-        String output = processor.process(root);
-        Document html = Jsoup.parseBodyFragment(output);
-        assertThat(output.trim(), not(equalTo("")));
-        
-        Elements container = html.select("div.form-group");
-        assertThat(container, notNullValue());
-        assertThat(container.attr("ng-class"), not(equalTo("")));
-        
-        Elements formInputElement = html.select("div.form-group input");
-        assertThat(formInputElement.attr("id"), equalTo("score"));
-        assertThat(formInputElement.attr("type"), equalTo("number"));
-        assertThat(formInputElement.attr("min"), equalTo("0"));
-        assertThat(formInputElement.attr("ng-model"), equalTo(StringUtils.camelCase(ENTITY_NAME)+"."+"score"));
+        assertTrue(output.contains("header:"));
+        assertTrue(output.contains("Score"));
+        assertTrue(output.contains("numberfield"));
     }
-    
-    @Test
-    public void testGenerateBasicNumberPropertyWithMaxConstraint() throws Exception {
-        Map<String, Object> root = createInspectionResultWrapper(ENTITY_NAME, NUMBER_PROP_WITH_MAX_VAL);
-
-        Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL_INCLUDE));
-        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
-        String output = processor.process(root);
-        Document html = Jsoup.parseBodyFragment(output);
-        assertThat(output.trim(), not(equalTo("")));
-        
-        Elements container = html.select("div.form-group");
-        assertThat(container, notNullValue());
-        assertThat(container.attr("ng-class"), not(equalTo("")));
-        
-        Elements formInputElement = html.select("div.form-group input");
-        assertThat(formInputElement.attr("id"), equalTo("score"));
-        assertThat(formInputElement.attr("type"), equalTo("number"));
-        assertThat(formInputElement.attr("max"), equalTo("100"));
-        assertThat(formInputElement.attr("ng-model"), equalTo(StringUtils.camelCase(ENTITY_NAME)+"."+"score"));
-    }
-    
-    @Test
-    public void testGenerateBasicDateProperty() throws Exception {
-        Map<String, Object> root = createInspectionResultWrapper(ENTITY_NAME, DATE_PROP);
-
-        Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL_INCLUDE));
-        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
-        String output = processor.process(root);
-        Document html = Jsoup.parseBodyFragment(output);
-        assertThat(output.trim(), not(equalTo("")));
-        
-        Elements container = html.select("div.form-group");
-        assertThat(container, notNullValue());
-        assertThat(container.attr("ng-class"), not(equalTo("")));
-        
-        Elements formInputElement = html.select("div.form-group date");
-        assertThat(formInputElement.attr("id"), equalTo("dateOfBirth"));
-        assertThat(formInputElement.attr("ng-model"), equalTo(StringUtils.camelCase(ENTITY_NAME)+"."+"dateOfBirth"));
-    }
-    
-    @Test
-    public void testGenerateBasicTimeProperty() throws Exception {
-        Map<String, Object> root = createInspectionResultWrapper(ENTITY_NAME, TIME_PROP);
-
-        Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL_INCLUDE));
-        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
-        String output = processor.process(root);
-        Document html = Jsoup.parseBodyFragment(output);
-        assertThat(output.trim(), not(equalTo("")));
-        
-        Elements container = html.select("div.form-group");
-        assertThat(container, notNullValue());
-        assertThat(container.attr("ng-class"), not(equalTo("")));
-        
-        Elements formInputElement = html.select("div.form-group time");
-        assertThat(formInputElement.attr("id"), equalTo("alarmTime"));
-        assertThat(formInputElement.attr("ng-model"), equalTo(StringUtils.camelCase(ENTITY_NAME)+"."+"alarmTime"));
-    }
-    
-    @Test
-    public void testGenerateBasicDatetimeProperty() throws Exception {
-        Map<String, Object> root = createInspectionResultWrapper(ENTITY_NAME, DATETIME_PROP);
-        Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL_INCLUDE));
-        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
-        String output = processor.process(root);
-        Document html = Jsoup.parseBodyFragment(output);
-        assertThat(output.trim(), not(equalTo("")));
-        
-        Elements container = html.select("div.form-group");
-        assertThat(container, notNullValue());
-        assertThat(container.attr("ng-class"), not(equalTo("")));
-        
-        Elements formInputElement = html.select("div.form-group datetime");
-        assertThat(formInputElement.attr("id"), equalTo("auditTimestamp"));
-        assertThat(formInputElement.attr("ng-model"), equalTo(StringUtils.camelCase(ENTITY_NAME)+"."+"auditTimestamp"));
-    }
-    
-    @Test
-    public void testGenerateBasicBooleanProperty() throws Exception {
-        Map<String, Object> root = createInspectionResultWrapper(ENTITY_NAME, BOOLEAN_PROP);
-
-        Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL_INCLUDE));
-        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
-        String output = processor.process(root);
-        Document html = Jsoup.parseBodyFragment(output);
-        assertThat(output.trim(), not(equalTo("")));
-        
-        Elements container = html.select("div.form-group");
-        assertThat(container, notNullValue());
-        assertThat(container.attr("ng-class"), not(equalTo("")));
-        
-        Elements formInputElement = html.select("div.form-group input");
-        assertThat(formInputElement.attr("id"), equalTo("optForMail"));
-        assertThat(formInputElement.attr("type"), equalTo("checkbox"));
-        assertThat(formInputElement.attr("ng-model"), equalTo(StringUtils.camelCase(ENTITY_NAME)+"."+"optForMail"));
-    }
-
 }

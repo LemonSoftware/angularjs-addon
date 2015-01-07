@@ -6,25 +6,7 @@
  */
 package org.jboss.forge.addon.angularjs;
 
-import static org.jboss.forge.addon.angularjs.ResourceProvider.ANGULAR_JS;
-import static org.jboss.forge.addon.angularjs.ResourceProvider.ANGULAR_RESOURCE_JS;
-import static org.jboss.forge.addon.angularjs.ResourceProvider.ANGULAR_ROUTE_JS;
-import static org.jboss.forge.addon.angularjs.ResourceProvider.BOOTSTRAP_CSS;
-import static org.jboss.forge.addon.angularjs.ResourceProvider.BOOTSTRAP_JS;
-import static org.jboss.forge.addon.angularjs.ResourceProvider.BOOTSTRAP_THEME_CSS;
-import static org.jboss.forge.addon.angularjs.ResourceProvider.FORGE_LOGO_PNG;
-import static org.jboss.forge.addon.angularjs.ResourceProvider.GLYPHICONS_EOT;
-import static org.jboss.forge.addon.angularjs.ResourceProvider.GLYPHICONS_SVG;
-import static org.jboss.forge.addon.angularjs.ResourceProvider.GLYPHICONS_TTF;
-import static org.jboss.forge.addon.angularjs.ResourceProvider.GLYPHICONS_WOFF;
-import static org.jboss.forge.addon.angularjs.ResourceProvider.JQUERY_JS;
-import static org.jboss.forge.addon.angularjs.ResourceProvider.LANDING_VIEW;
-import static org.jboss.forge.addon.angularjs.ResourceProvider.MAIN_CSS;
-import static org.jboss.forge.addon.angularjs.ResourceProvider.MODERNIZR_JS;
-import static org.jboss.forge.addon.angularjs.ResourceProvider.OFFCANVAS_JS;
-import static org.jboss.forge.addon.angularjs.ResourceProvider.getEntityTemplates;
-import static org.jboss.forge.addon.angularjs.ResourceProvider.getGlobalTemplates;
-import static org.jboss.forge.addon.angularjs.ResourceProvider.getStatics;
+import static org.jboss.forge.addon.angularjs.ResourceProvider.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -44,6 +26,7 @@ import java.util.jar.JarFile;
 import javax.inject.Inject;
 import javax.persistence.Id;
 
+import org.apache.log4j.Logger;
 import org.jboss.forge.addon.facets.FacetFactory;
 import org.jboss.forge.addon.javaee.cdi.CDIFacet;
 import org.jboss.forge.addon.javaee.cdi.ui.CDISetupCommand;
@@ -97,6 +80,8 @@ public class AngularScaffoldProvider implements ScaffoldProvider
 
    public static final String SCAFFOLD_DIR = "/" + BASE_PACKAGE.replace('.', '/');
 
+   private final static Logger LOGGER = Logger.getLogger(AngularScaffoldProvider.class);
+
    Project project;
 
    @Inject
@@ -114,23 +99,26 @@ public class AngularScaffoldProvider implements ScaffoldProvider
    @Override
    public String getName()
    {
-      return "AngularJS";
+      return "ExtJS-Forked";
    }
 
    @Override
    public String getDescription()
    {
-      return "Scaffold a RESTful service and an AngularJS client, from JPA entities";
+      return "Scaffold a RESTful service and an ExtJS client, from JPA entities";
    }
 
    @Override
    public List<Resource<?>> setup(ScaffoldSetupContext setupContext)
    {
+      LOGGER.info("Setting up ExtJS");
+      LOGGER.debug("setup context [" + setupContext + "]");
       setProject(setupContext.getProject());
       String targetDir = setupContext.getTargetDirectory();
       targetDir = (targetDir == null) ? "" : targetDir;
 
       // Setup static resources.
+      LOGGER.info("Setting up static resources for project [" + setupContext.getProject() + "]");
       ArrayList<Resource<?>> result = new ArrayList<>();
       WebResourcesFacet web = project.getFacet(WebResourcesFacet.class);
       ProcessingStrategy strategy = new CopyResourcesStrategy(web);
@@ -152,23 +140,10 @@ public class AngularScaffoldProvider implements ScaffoldProvider
                CDIFacet.class, RestFacet.class))
       {
          WebResourcesFacet web = project.getFacet(WebResourcesFacet.class);
-         boolean areResourcesInstalled = web.getWebResource(targetDir + GLYPHICONS_SVG).exists()
-                  && web.getWebResource(targetDir + GLYPHICONS_EOT).exists()
-                  && web.getWebResource(targetDir + GLYPHICONS_SVG).exists()
-                  && web.getWebResource(targetDir + GLYPHICONS_TTF).exists()
-                  && web.getWebResource(targetDir + GLYPHICONS_WOFF).exists()
-                  && web.getWebResource(targetDir + FORGE_LOGO_PNG).exists()
-                  && web.getWebResource(targetDir + ANGULAR_RESOURCE_JS).exists()
-                  && web.getWebResource(targetDir + ANGULAR_ROUTE_JS).exists()
-                  && web.getWebResource(targetDir + ANGULAR_JS).exists()
-                  && web.getWebResource(targetDir + MODERNIZR_JS).exists()
-                  && web.getWebResource(targetDir + JQUERY_JS).exists()
-                  && web.getWebResource(targetDir + BOOTSTRAP_JS).exists()
-                  && web.getWebResource(targetDir + OFFCANVAS_JS).exists()
-                  && web.getWebResource(targetDir + MAIN_CSS).exists()
-                  && web.getWebResource(targetDir + BOOTSTRAP_CSS).exists()
-                  && web.getWebResource(targetDir + BOOTSTRAP_THEME_CSS).exists()
-                  && web.getWebResource(targetDir + LANDING_VIEW).exists();
+         boolean areResourcesInstalled = web.getWebResource(targetDir + ResourceProvider.MAIN_CSS).exists()
+                  && web.getWebResource(targetDir + ResourceProvider.IMAGE_ADD).exists()
+                  && web.getWebResource(targetDir + ResourceProvider.IMAGE_DELETE).exists()
+                 && web.getWebResource(targetDir + ResourceProvider.NULLID_GENERATOR_FTL_JS).exists();
          return areResourcesInstalled;
       }
       return false;
@@ -177,11 +152,13 @@ public class AngularScaffoldProvider implements ScaffoldProvider
    @Override
    public List<Resource<?>> generateFrom(ScaffoldGenerationContext generationContext)
    {
+      LOGGER.debug("generationContext for project [" + generationContext.getProject() + "], target dir [" + generationContext.getTargetDirectory() + "]");
       setProject(generationContext.getProject());
       String targetDir = generationContext.getTargetDirectory();
       targetDir = (targetDir == null) ? "" : targetDir;
       List<Resource<?>> result = new ArrayList<>();
       Collection<Resource<?>> resources = generationContext.getResources();
+      Collection<String> entityNames = new ArrayList<>();
       for (Resource<?> resource : resources)
       {
          JavaSource<?> javaSource = null;
@@ -210,9 +187,13 @@ public class AngularScaffoldProvider implements ScaffoldProvider
          // We'll let the user resolve the incorrect path later,
          // if needed through regeneration of the JAX-RS resources.
          String entityName = entity.getName();
+         entityNames.add(entityName);
+         LOGGER.debug("Entity [" + entity.getName() + "],Root path [" + resourceRootPath + "], Resource path [" + entityResourcePath + "]");
          if (entityResourcePath == null || entityResourcePath.isEmpty())
          {
-            entityResourcePath = inflector.pluralize(entityName.toLowerCase());
+            //TODO: throw exception until the proper behaviour identified.
+            throw new ExtJSException("No Resources found for entity ["+entityName+"]");
+//            entityResourcePath = inflector.pluralize(entityName.toLowerCase());
          }
          entityResourcePath = trimSlashes(entityResourcePath);
 
@@ -222,8 +203,10 @@ public class AngularScaffoldProvider implements ScaffoldProvider
          InspectionResultProcessor angularResultEnhancer = new InspectionResultProcessor(project,
                   metawidgetInspectorFacade);
          List<Map<String, String>> inspectionResults = metawidgetInspectorFacade.inspect(entity);
+         LOGGER.debug("Meta widget inspection results ["+inspectionResults+"]");
          String entityId = angularResultEnhancer.fetchEntityId(entity, inspectionResults);
          inspectionResults = angularResultEnhancer.enhanceResults(entity, inspectionResults);
+         LOGGER.debug("entity id ["+entityId+"], final inspection results ["+inspectionResults+"]");
 
          MetadataFacet metadata = project.getFacet(MetadataFacet.class);
 
@@ -231,32 +214,35 @@ public class AngularScaffoldProvider implements ScaffoldProvider
          // We need this to use contextual naming schemes instead of performing toLowerCase etc. in FTLs.
 
          // Prepare the Freemarker data model
+         String projectId = StringUtils.camelCase(metadata.getProjectName());
          Map<String, Object> dataModel = new HashMap<>();
          dataModel.put("entityName", entityName);
          dataModel.put("pluralizedEntityName", inflector.pluralize(entityName));
          dataModel.put("entityId", entityId);
          dataModel.put("properties", inspectionResults);
-         dataModel.put("projectId", StringUtils.camelCase(metadata.getProjectName()));
+         dataModel.put("projectId", projectId);
          dataModel.put("projectTitle", StringUtils.uncamelCase(metadata.getProjectName()));
          dataModel.put("resourceRootPath", resourceRootPath);
          dataModel.put("resourcePath", entityResourcePath);
          dataModel.put("parentDirectories", getParentDirectories(targetDir));
 
+         LOGGER.debug("Freemarker data model: [" + dataModel + "]");
+
          // Process the Freemarker templates with the Freemarker data model and retrieve the generated resources from
          // the registry.
+         LOGGER.info("Setting up template resources for project [" + project + "]");
          WebResourcesFacet web = project.getFacet(WebResourcesFacet.class);
          ProcessingStrategy strategy = new ProcessTemplateStrategy(web, resourceFactory, project, templateFactory, dataModel);
-         List<ScaffoldResource> scaffoldResources = getEntityTemplates(targetDir, entityName, strategy);
-         scaffoldResources.add(new ScaffoldResource("/views/detail.html.ftl", targetDir + "/views/" + entityName
-                  + "/detail.html", new DetailTemplateStrategy(web, resourceFactory, project, templateFactory, dataModel)));
-         scaffoldResources.add(new ScaffoldResource("/views/search.html.ftl", targetDir + "/views/" + entityName
-                  + "/search.html", new SearchTemplateStrategy(web, resourceFactory, project, templateFactory, dataModel)));
+         DetailTemplateStrategy detailTemplateStrategy = new DetailTemplateStrategy(web, resourceFactory, project, templateFactory, dataModel);
+
+         List<ScaffoldResource> scaffoldResources = ResourceProvider.getDetailTemplates(targetDir, projectId, entityName, detailTemplateStrategy);
+         scaffoldResources.addAll(ResourceProvider.getEntityTemplates(targetDir, projectId, entityName, strategy));
          for (ScaffoldResource scaffoldResource : scaffoldResources) {
             result.add(scaffoldResource.generate());
          }
       }
 
-      List<Resource<?>> indexResources = generateIndex(targetDir);
+      List<Resource<?>> indexResources = generateIndex(targetDir, entityNames);
       result.addAll(indexResources);
       return result;
    }
@@ -325,53 +311,24 @@ public class AngularScaffoldProvider implements ScaffoldProvider
     * @param targetDir The target directory for the generated scaffold artifacts.
     * @return A list of generated {@link Resource}s
     */
-   public List<Resource<?>> generateIndex(String targetDir)
+   public List<Resource<?>> generateIndex(String targetDir, Collection<String> entityNames)
    {
+      LOGGER.info("Generate Index for project [" + project + "]");
       ArrayList<Resource<?>> result = new ArrayList<>();
 
-      /*
-       * TODO: Revert this change at a later date, if necessary. This is currently done to ensure that entities are
-       * picked up during invocation of the plugin from the Forge wizard in JBDS.
-       */
-      ResourceFilter filter = new ResourceFilter()
-      {
-         @Override
-         public boolean accept(Resource<?> resource)
-         {
-            FileResource<?> file = (FileResource<?>) resource;
-
-            if (!file.isDirectory() || file.getName().equals("resources") || file.getName().equals("WEB-INF")
-                     || file.getName().equals("META-INF"))
-            {
-               return false;
-            }
-
-            return true;
-         }
-      };
-
       WebResourcesFacet web = this.project.getFacet(WebResourcesFacet.class);
-      List<Resource<?>> resources = web.getWebResource(targetDir + "/views/").listResources(filter);
-      List<String> entityNames = new ArrayList<>();
-      List<String> pluralizedEntityNames = new ArrayList<>();
-      for (Resource<?> resource : resources)
-      {
-         String resourceName = resource.getName();
-         entityNames.add(resourceName);
-         pluralizedEntityNames.add(inflector.pluralize(resourceName));
-      }
 
       MetadataFacet metadata = project.getFacet(MetadataFacet.class);
 
+      String projectId = StringUtils.camelCase(metadata.getProjectName());
       Map<String, Object> dataModel = new HashMap<>();
       dataModel.put("entityNames", entityNames);
-      dataModel.put("pluralizedEntityNames", pluralizedEntityNames);
-      dataModel.put("projectId", StringUtils.camelCase(metadata.getProjectName()));
+      dataModel.put("projectId", projectId);
       dataModel.put("projectTitle", StringUtils.uncamelCase(metadata.getProjectName()));
       dataModel.put("targetDir", targetDir);
 
       ProcessingStrategy strategy = new ProcessTemplateStrategy(web, resourceFactory, project, templateFactory, dataModel);
-      for (ScaffoldResource scaffoldResource : getGlobalTemplates(targetDir, strategy)) {
+      for (ScaffoldResource scaffoldResource : ResourceProvider.getGlobalTemplates(targetDir, projectId, strategy)) {
           result.add(scaffoldResource.generate());
       }
 

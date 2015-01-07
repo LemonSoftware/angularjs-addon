@@ -26,10 +26,10 @@ import org.jboss.forge.addon.templates.freemarker.FreemarkerTemplate;
  */
 public class DetailTemplateStrategy implements ProcessingStrategy
 {
-   private static final String BASIC_PROPERTY_DETAIL = "/views/includes/basicPropertyDetail.html.ftl";
-   private static final String LOOKUP_PROPERTY_DETAIL = "/views/includes/lookupPropertyDetail.html.ftl";
-   private static final String N_TO_MANY_PROPERTY_DETAIL = "/views/includes/nToManyPropertyDetail.html.ftl";
-   private static final String N_TO_ONE_PROPERTY_DETAIL = "/views/includes/nToOnePropertyDetail.html.ftl";
+   private static final String BASIC_PROPERTY_DETAIL = "/scripts/view/includes/basicPropertyDetail.js.ftl";
+   private static final String LOOKUP_PROPERTY_DETAIL = "/scripts/view/includes/lookupPropertyDetail.js.ftl";
+   private static final String N_TO_MANY_PROPERTY_DETAIL = "/scripts/view/includes/nToManyPropertyDetail.js.ftl";
+   private static final String N_TO_ONE_PROPERTY_DETAIL = "/scripts/view/includes/nToOnePropertyDetail.html.ftl";
 
    private final WebResourcesFacet web;
 
@@ -57,6 +57,7 @@ public class DetailTemplateStrategy implements ProcessingStrategy
       @SuppressWarnings("unchecked")
       List<Map<String, String>> properties = (List<Map<String, String>>) dataModel.get("properties");
       StringBuilder formProperties = new StringBuilder();
+      int i = properties.size();
       for (Map<String, String> property : properties)
       {
          dataModel.put("property", property);
@@ -78,7 +79,13 @@ public class DetailTemplateStrategy implements ProcessingStrategy
             includeFile = new Include(BASIC_PROPERTY_DETAIL);
          }
          String output = includeFile.processInclude(dataModel);
-         formProperties.append(output).append('\n');
+
+         formProperties.append(output);
+         i--;
+         if(i > 0 && output != null && !output.equals("")){
+            formProperties.append(",");
+         }
+         formProperties.append('\n');
       }
       dataModel.put("formProperties", formProperties.toString());
       ProcessTemplateStrategy strategy = new ProcessTemplateStrategy(web, resourceFactory, project,

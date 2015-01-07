@@ -1,8 +1,17 @@
 package org.jboss.forge.addon.angularjs.tests.freemarker;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Properties;
 
+import org.apache.commons.io.IOUtils;
 import org.jboss.forge.addon.angularjs.AngularScaffoldProvider;
+import org.jboss.forge.addon.angularjs.DetailTemplateStrategy;
+import org.jboss.forge.addon.angularjs.ExtJSException;
+import org.jboss.forge.addon.angularjs.TestHelpers;
 import org.jboss.forge.addon.angularjs.matchers.InspectionResultMatcher;
 import org.jboss.forge.addon.angularjs.util.RestResourceTypeVisitor;
 import org.jboss.forge.arquillian.archive.ForgeArchive;
@@ -12,29 +21,54 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 
 public class Deployments {
 
-	public static ForgeArchive getDeployment() {
-		return ShrinkWrap
-				.create(ForgeArchive.class)
-				.addClass(Deployments.class)
+    static Properties properties;
+
+
+    public static String getProperty(String key) {
+        try {
+            if (properties == null) {
+                properties = new Properties();
+                properties.load(Deployments.class.getClassLoader().getResourceAsStream("test.properties"));
+            }
+        } catch (IOException e) {
+            throw new ExtJSException("Error reading test properties", e);
+        }
+        return (String) properties.get(key);
+    }
+
+    public static void writeToTemp(String output, String fileName) throws IOException {
+
+        if (!Files.exists(Paths.get(Deployments.getProperty("project.tmp")))) {
+            throw new ExtJSException("The temp directory configured [" + Deployments.getProperty("project.tmp") + "] is not correct, please " +
+                    "set the proper path in the test.properties, this path is used to write the output of the freemarker's generated web content" +
+                    " for manual verification.");
+        } else {
+            IOUtils.write(output, new FileOutputStream(Deployments.getProperty("project.tmp") + fileName));
+        }
+
+    }
+
+    public static ForgeArchive getDeployment() {
+        return ShrinkWrap
+                .create(ForgeArchive.class)
+                .addClass(Deployments.class)
+                .addClass(DetailTemplateStrategy.class)
                 .addClass(InspectionResultMatcher.class)
 				.addAsLibrary(Maven.resolver().resolve("org.jsoup:jsoup:1.7.1").withTransitivity().asSingleFile())
 				.addPackage(AngularScaffoldProvider.class.getPackage())
+				.addPackage(TestHelpers.class.getPackage())
                 .addClass(RestResourceTypeVisitor.class)
 				.addAsResources(Deployments.BASE_PACKAGE,
-						Deployments.NEW_ENTITY_CONTROLLER_JS,
-						Deployments.EDIT_ENTITY_CONTROLLER_JS,
-						Deployments.SEARCH_ENTITY_CONTROLLER_JS,
-						Deployments.ENTITY_FACTORY, Deployments.DETAIL_VIEW,
-						Deployments.SEARCH_VIEW,
-						Deployments.SEARCH_RESULTS_PAGINATOR_INCLUDE,
-						Deployments.SEARCH_RESULTS,
-						Deployments.SEARCH_FORM_INPUT,
-						Deployments.BASIC_PROPERTY_DETAIL_INCLUDE,
-						Deployments.LOOKUP_PROPERTY_DETAIL_INCLUDE,
-						Deployments.N_TO_ONE_PROPERTY_DETAIL_INCLUDE,
-						Deployments.N_TO_MANY_PROPERTY_DETAIL_INCLUDE,
-						Deployments.INDEX_PAGE,
-						Deployments.APP_JS)
+                        INDEX_FTL_HTML,
+                        JS_ENTITY_FTL_CONTROLLER,
+                        JS_ENTITY_FTL_MODEL,
+                        JS_ENTITY_FTL_STORE,
+                        JS_ENTITY_FTL_VIEW,
+                        MAIN_FTL_JS,
+                        VIEWPORT_FTL_JS, JS_ENTITY_FTL_STORE, NULLID_FTL_JS,
+                        BASIC_PROPERTY_DETAIL, LOOKUP_PROPERTY_DETAIL, N_TO_MANY_PROPERTY_DETAIL,
+                        N_TO_ONE_PROPERTY_DETAIL)
+                .addAsResource("test.properties")
 				.addBeansXML()
 				.addAsAddonDependencies(
 						AddonDependencyEntry
@@ -56,20 +90,19 @@ public class Deployments {
 	public static final Package BASE_PACKAGE = AngularScaffoldProvider.class
 			.getPackage();
 	public static final String BASE_PACKAGE_PATH = "/" + BASE_PACKAGE.getName().replace('.', '/') + File.separator;
-	public static final String NEW_ENTITY_CONTROLLER_JS = "scripts/controllers/newEntityController.js.ftl";
-	public static final String EDIT_ENTITY_CONTROLLER_JS = "scripts/controllers/editEntityController.js.ftl";
-	public static final String SEARCH_ENTITY_CONTROLLER_JS = "scripts/controllers/searchEntityController.js.ftl";
-	public static final String ENTITY_FACTORY = "scripts/services/entityFactory.js.ftl";
-	public static final String DETAIL_VIEW = "views/detail.html.ftl";
-	public static final String SEARCH_VIEW = "views/search.html.ftl";
-	public static final String SEARCH_RESULTS_PAGINATOR_INCLUDE = "views/includes/searchResultsPaginator.html.ftl";
-	public static final String SEARCH_RESULTS = "views/includes/searchResults.html.ftl";
-	public static final String SEARCH_FORM_INPUT = "views/includes/searchFormInput.html.ftl";
-	public static final String BASIC_PROPERTY_DETAIL_INCLUDE = "views/includes/basicPropertyDetail.html.ftl";
-	public static final String LOOKUP_PROPERTY_DETAIL_INCLUDE = "views/includes/lookupPropertyDetail.html.ftl";
-	public static final String N_TO_ONE_PROPERTY_DETAIL_INCLUDE = "views/includes/nToOnePropertyDetail.html.ftl";
-	public static final String N_TO_MANY_PROPERTY_DETAIL_INCLUDE = "views/includes/nToManyPropertyDetail.html.ftl";
-	public static final String INDEX_PAGE = "index.html.ftl";
-	public static final String APP_JS = "scripts/app.js.ftl";
+    public static final String INDEX_FTL_HTML = "index.html.ftl";
+    public static final String JS_ENTITY_FTL_CONTROLLER = "scripts/controller/entityController.js.ftl";
+    public static final String JS_ENTITY_FTL_MODEL = "scripts/model/entityModel.js.ftl";
+    public static final String JS_ENTITY_FTL_STORE = "scripts/store/entityStore.js.ftl";
+    public static final String JS_ENTITY_FTL_VIEW = "scripts/view/entityGrid.js.ftl";
+    public static final String MAIN_FTL_JS = "scripts/main.js.ftl";
+    public static final String VIEWPORT_FTL_JS = "scripts/Viewport.js.ftl";
+    public static final String NULLID_FTL_JS = "scripts/NullIdGenerator.js.ftl";
+
+    public static final String BASIC_PROPERTY_DETAIL = "scripts/view/includes/basicPropertyDetail.js.ftl";
+    public static final String LOOKUP_PROPERTY_DETAIL = "scripts/view/includes/lookupPropertyDetail.js.ftl";
+    public static final String N_TO_MANY_PROPERTY_DETAIL = "scripts/view/includes/nToManyPropertyDetail.js.ftl";
+    public static final String N_TO_ONE_PROPERTY_DETAIL = "scripts/view/includes/nToOnePropertyDetail.html.ftl";
+
 
 }

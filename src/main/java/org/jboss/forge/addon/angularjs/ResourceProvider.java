@@ -18,74 +18,61 @@ import java.util.List;
  */
 public class ResourceProvider {
 
-    static final String INDEX_HTML = "/index.html";
-    
-    static final String LANDING_VIEW = "/views/landing.html";
+    //Add-on Resources
 
-    static final String GLYPHICONS_EOT = "/fonts/glyphicons-halflings-regular.eot";
+    static final String MAIN_CSS = "/style/base.css";
 
-    static final String GLYPHICONS_SVG = "/fonts/glyphicons-halflings-regular.svg";
-    
-    static final String GLYPHICONS_TTF = "/fonts/glyphicons-halflings-regular.ttf";
-    
-    static final String GLYPHICONS_WOFF = "/fonts/glyphicons-halflings-regular.woff";
-    
-    static final String FORGE_LOGO_PNG = "/img/forge-logo.png";
+    static final String IMAGE_ADD = "/images/add.png";
 
-    static final String ANGULAR_RESOURCE_JS = "/scripts/vendor/angular-resource.js";
-    
-    static final String ANGULAR_ROUTE_JS = "/scripts/vendor/angular-route.js";
+    static final String IMAGE_DELETE = "/images/delete.png";
 
-    static final String ANGULAR_JS = "/scripts/vendor/angular.js";
-    
-    static final String MODERNIZR_JS = "/scripts/vendor/modernizr-2.8.3.min.js";
+    static final String JS_FOLDER = "/scripts";
 
-    static final String JQUERY_JS = "/scripts/vendor/jquery-2.0.3.js";
-    
-    static final String BOOTSTRAP_JS = "/scripts/vendor/bootstrap.js";
+//    static final String EXTJS_FOLDER = "/extjs-5.0";
 
-    static final String MAIN_CSS = "/styles/main.css";
-    
-    static final String BOOTSTRAP_CSS = "/styles/bootstrap.css";
-    
-    static final String BOOTSTRAP_THEME_CSS = "/styles/bootstrap-theme.css";
-    
-    static final String OFFCANVAS_JS = "/scripts/offcanvas.js";
+
+    //Add-on FTL resources
+    public static final String NULLID_GENERATOR_FTL_JS = JS_FOLDER + "/NullIdGenerator.js.ftl";
+
+    public static final String VIEWPORT_FTL_JS = JS_FOLDER + "/Viewport.js.ftl";
+
+    public static final String INDEX_FTL_HTML = "/index.html.ftl";
+
+    public static final String MAIN_FTL_JS = "/scripts/main.js.ftl";
+
+
+    //project entity resources
+    public  static final String JS_ENTITY_FTL_CONTROLLER = JS_FOLDER+"/controller/entityController.js.ftl";
+
+    public  static final String JS_ENTITY_FTL_MODEL = JS_FOLDER+"/model/entityModel.js.ftl";
+
+    public  static final String JS_ENTITY_FTL_STORE = JS_FOLDER+"/store/entityStore.js.ftl";
+
+    public  static final String JS_ENTITY_FTL_VIEW = JS_FOLDER+"/view/entityGrid.js.ftl";
 
     /**
-     * Provides a list of {@link ScaffoldResource}s representing static files that are to be copied upon scaffolding setup.
-     * 
+     * Provides a list of {@link org.jboss.forge.addon.ScaffoldResource}s representing static files that are to be copied upon scaffolding setup.
+     *
      * @param targetDir The target directory that serves as the root directory of the destination for the generated resources to
      *        be copied to.
-     * @param strategy The {@link ProcessingStrategy} to use for processing the static file. Usually this involves a strategy to copy
+     * @param strategy The {@link org.jboss.forge.addon.ProcessingStrategy} to use for processing the static file. Usually this involves a strategy to copy
      *        files from a source to destination.
-     * @return A list of {@link ScaffoldResource}s representing static files that are to be copied upon scaffolding setup.
+     * @return A list of {@link org.jboss.forge.addon.ScaffoldResource}s representing static files that are to be copied upon scaffolding setup.
      */
     public static List<ScaffoldResource> getStatics(String targetDir, ProcessingStrategy strategy) {
         List<ScaffoldResource> statics = new ArrayList<>();
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + BOOTSTRAP_CSS, targetDir + BOOTSTRAP_CSS, strategy));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + MAIN_CSS, targetDir + MAIN_CSS, strategy));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + BOOTSTRAP_THEME_CSS, targetDir + BOOTSTRAP_THEME_CSS, strategy));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + OFFCANVAS_JS, targetDir + OFFCANVAS_JS, strategy));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + JQUERY_JS, targetDir + JQUERY_JS, strategy));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + BOOTSTRAP_JS, targetDir + BOOTSTRAP_JS, strategy));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + ANGULAR_JS, targetDir + ANGULAR_JS, strategy));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + ANGULAR_ROUTE_JS, targetDir + ANGULAR_ROUTE_JS, strategy));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + ANGULAR_RESOURCE_JS, targetDir + ANGULAR_RESOURCE_JS, strategy));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + MODERNIZR_JS, targetDir + MODERNIZR_JS, strategy));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + FORGE_LOGO_PNG, targetDir + FORGE_LOGO_PNG, strategy));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_EOT, targetDir + GLYPHICONS_EOT, strategy));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_SVG, targetDir + GLYPHICONS_SVG, strategy));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_TTF, targetDir + GLYPHICONS_TTF, strategy));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_WOFF, targetDir + GLYPHICONS_WOFF, strategy));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + LANDING_VIEW, targetDir + LANDING_VIEW, strategy));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + IMAGE_ADD, targetDir + IMAGE_ADD, strategy));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + IMAGE_DELETE, targetDir + IMAGE_DELETE, strategy));
+//        statics.add(new ScaffoldResource(SCAFFOLD_DIR + EXTJS_FOLDER, targetDir + EXTJS_FOLDER, strategy));
+
         return statics;
     }
-    
+
     /**
      * Provides a list of {@link ScaffoldResource}s representing Freemarker templates that are to be processed only once for a
      * scaffold generation run.
-     * 
+     *
      * @param targetDir The target directory that serves as the root directory of the destination for the generated resources to
      *        be written to.
      * @param strategy The {@link ProcessingStrategy} to use for processing the static file. Usually this involves a strategy to process
@@ -93,30 +80,29 @@ public class ResourceProvider {
      * @return A list of {@link ScaffoldResource}s representing Freemarker templates that are to be processed only once for a
      *         scaffold generation run.
      */
-    public static List<ScaffoldResource> getGlobalTemplates(String targetDir, ProcessingStrategy strategy) {
+    public static List<ScaffoldResource> getGlobalTemplates(String targetDir, String projectId, ProcessingStrategy strategy) {
         List<ScaffoldResource> resources = new ArrayList<>();
-        resources.add(new ScaffoldResource("/index.html.ftl", targetDir+ INDEX_HTML, strategy));
-        resources.add(new ScaffoldResource("/app.html.ftl", targetDir + "/app.html", strategy));
-        resources.add(new ScaffoldResource("/scripts/app.js.ftl", targetDir + "/scripts/app.js", strategy));
-        resources.add(new ScaffoldResource("/scripts/directives/datepicker.js.ftl", targetDir
-                + "/scripts/directives/datepicker.js", strategy));
-        resources.add(new ScaffoldResource("/scripts/directives/timepicker.js.ftl", targetDir
-                + "/scripts/directives/timepicker.js", strategy));
-        resources.add(new ScaffoldResource("/scripts/directives/datetimepicker.js.ftl", targetDir
-                + "/scripts/directives/datetimepicker.js", strategy));
-        resources.add(new ScaffoldResource("/scripts/services/locationParser.js.ftl", targetDir
-                + "/scripts/services/locationParser.js", strategy));
-        resources.add(new ScaffoldResource("/scripts/filters/genericSearchFilter.js.ftl", targetDir
-                + "/scripts/filters/genericSearchFilter.js", strategy));
-        resources.add(new ScaffoldResource("/scripts/filters/startFromFilter.js.ftl", targetDir
-                + "/scripts/filters/startFromFilter.js", strategy));
+        resources.add(new ScaffoldResource(INDEX_FTL_HTML, targetDir + projectPathOutofTemplate(projectId, INDEX_FTL_HTML), strategy));
+        resources.add(new ScaffoldResource(MAIN_FTL_JS, targetDir + projectPathOutofTemplate(projectId, MAIN_FTL_JS), strategy));
+        resources.add(new ScaffoldResource(VIEWPORT_FTL_JS, targetDir + projectPathOutofTemplate(projectId, VIEWPORT_FTL_JS), strategy));
+        resources.add(new ScaffoldResource(NULLID_GENERATOR_FTL_JS, targetDir + projectPathOutofTemplate(projectId, NULLID_GENERATOR_FTL_JS), strategy));
+
         return resources;
+    }
+
+    private static String projectPathOutofTemplate(String projectId, String ftlFile) {
+        return ftlFile.substring(0, ftlFile.length() - 4).replace(JS_FOLDER, "/" + projectId);
+    }
+
+    private static String projectEntityPathOutofTemplate(String ftlFile, String projectId, String entityName) {
+        ftlFile = ftlFile.replace("entity", entityName);
+        return projectPathOutofTemplate(projectId, ftlFile);
     }
 
     /**
      * Provides a list of {@link ScaffoldResource}s representing Freemarker templates that are to be processed for every entity
      * during a scaffold generation run.
-     * 
+     *
      * @param targetDir The target directory that serves as the root directory of the destination for the generated resources to
      *        be written to.
      * @param entityName The name of the JPA entity
@@ -125,17 +111,18 @@ public class ResourceProvider {
      * @return A list of {@link ScaffoldResource}s representing Freemarker templates that are to be processed for every entity
      *         during a scaffold generation run.
      */
-    public static List<ScaffoldResource> getEntityTemplates(String targetDir, String entityName, ProcessingStrategy strategy) {
+    public static List<ScaffoldResource> getEntityTemplates(String targetDir, String projectId, String entityName, ProcessingStrategy strategy) {
         List<ScaffoldResource> resources = new ArrayList<>();
-        resources.add(new ScaffoldResource("/scripts/services/entityFactory.js.ftl", targetDir + "/scripts/services/"
-                + entityName + "Factory.js", strategy));
-        resources.add(new ScaffoldResource("/scripts/controllers/newEntityController.js.ftl", targetDir
-                + "/scripts/controllers/new" + entityName + "Controller.js", strategy));
-        resources.add(new ScaffoldResource("/scripts/controllers/searchEntityController.js.ftl", targetDir
-                + "/scripts/controllers/search" + entityName + "Controller.js", strategy));
-        resources.add(new ScaffoldResource("/scripts/controllers/editEntityController.js.ftl", targetDir
-                + "/scripts/controllers/edit" + entityName + "Controller.js", strategy));
+        resources.add(new ScaffoldResource(JS_ENTITY_FTL_CONTROLLER, targetDir + projectEntityPathOutofTemplate(JS_ENTITY_FTL_CONTROLLER, projectId, entityName), strategy));
+        resources.add(new ScaffoldResource(JS_ENTITY_FTL_MODEL, targetDir + projectEntityPathOutofTemplate(JS_ENTITY_FTL_MODEL, projectId, entityName), strategy));
+        resources.add(new ScaffoldResource(JS_ENTITY_FTL_STORE, targetDir + projectEntityPathOutofTemplate(JS_ENTITY_FTL_STORE, projectId, entityName), strategy));
+        resources.add(new ScaffoldResource(JS_ENTITY_FTL_VIEW, targetDir + projectEntityPathOutofTemplate(JS_ENTITY_FTL_VIEW, projectId, entityName), strategy));
         return resources;
     }
 
+    public static List<ScaffoldResource> getDetailTemplates(String targetDir, String projectId, String entityName, ProcessingStrategy strategy){
+        List<ScaffoldResource> resources = new ArrayList<>();
+        resources.add(new ScaffoldResource(JS_ENTITY_FTL_VIEW, targetDir + projectEntityPathOutofTemplate(JS_ENTITY_FTL_VIEW, projectId, entityName), strategy));
+        return resources;
+    }
 }

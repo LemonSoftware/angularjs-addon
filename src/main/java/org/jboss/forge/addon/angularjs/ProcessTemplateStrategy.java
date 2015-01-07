@@ -11,6 +11,7 @@ import static org.jboss.forge.addon.angularjs.AngularScaffoldProvider.SCAFFOLD_D
 import java.io.IOException;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.projects.facets.WebResourcesFacet;
 import org.jboss.forge.addon.resource.Resource;
@@ -28,6 +29,8 @@ import org.jboss.forge.addon.templates.freemarker.FreemarkerTemplate;
  */
 public class ProcessTemplateStrategy implements ProcessingStrategy
 {
+
+   private Logger logger = Logger.getLogger(ProcessTemplateStrategy.class);
 
    private final WebResourcesFacet web;
 
@@ -52,6 +55,7 @@ public class ProcessTemplateStrategy implements ProcessingStrategy
    @Override
    public Resource<?> execute(ScaffoldResource scaffoldResource)
    {
+      logger.debug("generating scaffold for resource [" + scaffoldResource.getSource() + "], and destination [" + scaffoldResource.getDestination() + "], using model [" + dataModel + "]");
       Resource<?> resource = resourceFactory.create(getClass().getResource(
                SCAFFOLD_DIR + scaffoldResource.getSource()));
       if (project.hasFacet(TemplateFacet.class))
@@ -69,9 +73,11 @@ public class ProcessTemplateStrategy implements ProcessingStrategy
       try
       {
          output = template.process(dataModel);
+         logger.debug("generated scaffold for resource [" + scaffoldResource.getSource() + "]");
       }
       catch (IOException ioEx)
       {
+         logger.error(ioEx);
          throw new IllegalStateException(ioEx);
       }
       return ScaffoldUtil.createOrOverwrite(web.getWebResource(scaffoldResource.getDestination()), output);
