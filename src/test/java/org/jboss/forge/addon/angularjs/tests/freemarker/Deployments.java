@@ -58,7 +58,6 @@ public class Deployments {
                         VIEWPORT_FTL_JS, JS_ENTITY_FTL_STORE, NULLID_FTL_JS,
                         BASIC_PROPERTY_DETAIL, LOOKUP_PROPERTY_DETAIL, N_TO_MANY_PROPERTY_DETAIL,
                         N_TO_ONE_PROPERTY_DETAIL)
-                .addAsResource("test.properties")
 				.addBeansXML()
 				.addAsAddonDependencies(
 						AddonDependencyEntry

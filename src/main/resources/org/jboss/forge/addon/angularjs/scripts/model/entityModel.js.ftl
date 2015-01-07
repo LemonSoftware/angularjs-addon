@@ -35,11 +35,11 @@ Ext.define('${projectId}.model.${entityName}Model', {
     }<#if property_has_next> , </#if>
 </#list>
     ],
-<#if property["n-to-many"] ??>
-    <#if (property["n-to-many"]!"") != "">
-    manyToMany: '${projectId}.model.${property.simpleType}Model',
+<#list properties as property>
+    <#if property["n-to-many"]?? == true>
+        manyToMany: '${projectId}.model.${property.simpleType}Model',
     </#if>
-</#if>
+</#list>
     proxy: {
             type: 'rest',
             url: '${resourceRootPath}/${resourcePath}/',
