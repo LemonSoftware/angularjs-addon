@@ -10,7 +10,7 @@ Ext.define('${projectId}.view.${entityName}Grid', {
             frame: true,
             layout: 'auto',
             columns: [
-${formProperties}
+            ${formProperties}
             ],
             tbar: [
                 {

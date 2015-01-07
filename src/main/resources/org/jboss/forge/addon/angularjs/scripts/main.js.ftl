@@ -2,8 +2,7 @@
 
 Ext.application({
     name: '${projectName}',
-appFolder: '${projectId}',
-
+    appFolder: '${projectId}',
     requires: [
         'Ext.layout.container.*',
         'Ext.resizer.Splitter',
@@ -12,21 +11,19 @@ appFolder: '${projectId}',
         'Ext.window.Window',
         '${projectName}.*'
     ]
-, autoCreateViewport: '${projectId}.Viewport'
-,init: function() {
-}
-,views: [
-<#list entityNames as entityName>
-
-'${projectId}.view.${entityName}Grid' <#if entityName_has_next> , </#if>
-</#list>
-    ]
+    , autoCreateViewport: '${projectId}.Viewport'
+    ,init: function() {
+    }
+    ,views: [
+            <#list entityNames as entityName>
+            '${projectId}.view.${entityName}Grid' <#if entityName_has_next> , </#if>
+            </#list>
+            ]
 
 ,controllers: [
-<#list entityNames as entityName>
-'${projectId}.controller.${entityName}Controller' <#if entityName_has_next> , </#if>
-</#list>
-]
-
+              <#list entityNames as entityName>
+              '${projectId}.controller.${entityName}Controller' <#if entityName_has_next> , </#if>
+               </#list>
+               ]
 
 });

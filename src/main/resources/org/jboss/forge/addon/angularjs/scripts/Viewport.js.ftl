@@ -13,24 +13,22 @@ Ext.define('${projectId}.Viewport', {
             },
             items: [
                 {
-region: 'center',
-xtype: 'tabpanel',
-// TabPanel itself has no title
-activeTab: 0,
-// First tab active by default
-items: [
-<#list entityNames as entityName>
-{
-itemId: '${entityName}ManagementGridId',
-title: '${entityName} Management',
-xtype: '${entityName}Grid'
-}
-    <#if entityName_has_next> , </#if>
-</#list>
-
-
-]
-}
+                region: 'center',
+                xtype: 'tabpanel',
+                // TabPanel itself has no title
+                activeTab: 0,
+                // First tab active by default
+                items: [
+                        <#list entityNames as entityName>
+                            {
+                            itemId: '${entityName}ManagementGridId',
+                            title: '${entityName} Management',
+                            xtype: '${entityName}Grid'
+                            }
+                        <#if entityName_has_next> , </#if>
+                        </#list>
+                        ]
+                }
             ]
         });
         this.callParent(arguments);

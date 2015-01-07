@@ -11,7 +11,6 @@ Ext.define('${projectId}.store.${entityName}Store', {
 
 model: '${projectId}.model.${entityName}Model',
     proxy: {
-
         type: 'rest',
 url: '${resourceRootPath}/${resourcePath}/',
 

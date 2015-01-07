@@ -1,18 +1,15 @@
 <#assign entityName = "${entityName}">
-
 Ext.define('${projectId}.model.${entityName}Model', {
     extend: 'Ext.data.Model',
     requires: [
-'${projectId}.NullIdGenerator'
+    '${projectId}.NullIdGenerator'
     ],
     identifier: {
         type: 'nullgenerator'
-    },
+        },
     fields: [
-
-
 <#list properties as property>
-{
+    {
     name: '${property.identifier}',
     <#if (property["datetime-type"]!"") == "date">
     type: 'date',
@@ -28,34 +25,31 @@ Ext.define('${projectId}.model.${entityName}Model', {
         <#if property["maximum-value"]??> maxValue:"${property["maximum-value"]}"</#if><#t/>
     <#elseif property.type == "boolean">
     type: 'boolean'<#t/>
-   <#elseif (property["many-to-one"]!"") != "">
-  reference: '${projectId}.model.${property.simpleType}Model'
+    <#elseif (property["many-to-one"]!"") != "">
+    reference: '${projectId}.model.${property.simpleType}Model'
     <#else>
     defaultValue:null,
     useNull:true
     </#if>
 
-}<#if property_has_next> , </#if>
+    }<#if property_has_next> , </#if>
 </#list>
-
-
-],
+    ],
 <#if property["n-to-many"] ??>
-<#if (property["n-to-many"]!"") != "">
-manyToMany: '${projectId}.model.${property.simpleType}Model',
+    <#if (property["n-to-many"]!"") != "">
+    manyToMany: '${projectId}.model.${property.simpleType}Model',
+    </#if>
 </#if>
-</#if>
-proxy: {
+    proxy: {
+            type: 'rest',
+            url: '${resourceRootPath}/${resourcePath}/',
 
-type: 'rest',
-url: '${resourceRootPath}/${resourcePath}/',
-
-writer:{
-writeAllFields:true,
-dateFormat:'time'
-},
-pageParam: false,
-startParam: false,
-limitParam: false
+            writer:{
+            writeAllFields:true,
+            dateFormat:'time'
+            },
+    pageParam: false,
+    startParam: false,
+    limitParam: false
 }
 });
