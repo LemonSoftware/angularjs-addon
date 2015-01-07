@@ -1,7 +1,7 @@
-== angularjs-addon
+== extjs-addon
 :idprefix: id_ 
-The angularjs-addon enables developers to automate several tasks in the construction of applications that use AngularJS, in JBoss Forge.
-This addon provides *standalone* functionality, and it can be re-used in other addons.
+The extjs-addon enables developers to automate several tasks in the construction of applications that use ExtJS 5, in JBoss Forge.
+This addon is a fork of the angularjs-addon.
         
 === Dependencies:
 === Depends on
@@ -41,13 +41,13 @@ To use this addon, you must add it as a dependency in the *pom.xml* of your `for
 ----
 <dependency>
    <groupId>org.jboss.forge.addon</groupId>
-   <artifactId>angularjs</artifactId>
+   <artifactId>extjs</artifactId>
    <classifier>forge-addon</classifier>
    <version>${version}</version>
 </dependency>
 ----
 == Features
-* Scaffold web-apps from JPA entities. The generated scaffold uses a thick-client based on AngularJS, and a JAX-RS RESTful backend.
+* Scaffold web-apps from JPA entities. The generated scaffold uses a thick-client based on ExtJS 5, and a JAX-RS RESTful backend.
 
 == Usage
 
@@ -55,30 +55,32 @@ To use this addon, you must add it as a dependency in the *pom.xml* of your `for
 
 JBoss Tools with Forge 2.4.1, or JBoss Forge-CLI 2.4.1.
 
+Java 7, it is currently impossible to build the addon using Java 8.
+
 === Install the addon:
 
 Assuming JBoss Tools with Forge, or Forge-CLI is installed:
 
 *(JBT)*
 
-Ctrl+5. Run the "Install the addon from Git" command, using these coordinates: https://github.com/forge/angularjs-addon.git
+Ctrl+5. Run the "Install the addon from Git" command, using these coordinates: https://github.com/LemonSoftware/extjs-addon.git
 
 *(Forge-CLI)*
 
 ----
-$ addon-install-from-git --url https://github.com/forge/angularjs-addon.git
+$ addon-install-from-git --url https://github.com/LemonSoftware/extjs-addon.git
 ----
 
 === Create a new project
 
 *(JBT)*
 
-Ctrl+5. Run the "Project: New" command. Create a new web application, named 'hello-angular'.
+Ctrl+5. Run the "Project: New" command. Create a new web application, named 'hello-extjs'.
 
 *(Forge-CLI)*
 
 ----
-$ project-new --named hello-angular
+$ project-new --named hello-extjs
 ----
 
 === Setup JPA
@@ -131,26 +133,25 @@ $ constraint-add --onProperty age --constraint Min --value 0
 ----
 
 
-=== Setup and generate the AngularJS scaffold
+=== Setup and generate the ExtJS5 5 scaffold
 
 *(JBT)*
 
-Ctrl+5. Run the "Scaffold: Setup" command. Choose the "AngularJS" type to use.
+Ctrl+5. Run the "Scaffold: Setup" command. Choose the "ExtJS5" type to use.
 
-Ctrl+5. Run the "Scaffold: Generate" command. Choose the "AngularJS" type to use. Select the Customer entity to scaffold. (I'll rework this bit across scaffold providers when fixing FORGE-1501 and FORGE-1731).
+Ctrl+5. Run the "Scaffold: Generate" command. Choose the "ExtJS5" type to use. Select the Customer entity to scaffold. (I'll rework this bit across scaffold providers when fixing FORGE-1501 and FORGE-1731).
 
-On completion, a JAX-RS resource that can handle requests and responses of media type application/json should be created, in conjunction with the AngularJS views.
+On completion, a JAX-RS resource that can handle requests and responses of media type application/json should be created, in conjunction with the ExtJS 5 views.
 
 *(Forge-CLI)*
 
 ----
-$ scaffold-setup --provider AngularJS
-$ scaffold-generate --provider AngularJS --targets org.hello.angular.model.Customer
+$ scaffold-setup --provider ExtJS5
+$ scaffold-generate --provider ExtJS5 --targets org.hello.extjs.model.Customer
 ----
 
 This app can now be deployed to JBoss EAP.
 
 == Issue Tracker
 
-We do not use GitHub issues for issue tracking.
-Please raise issues in the https://issues.jboss.org//secure/CreateIssueDetails!init.jspa?pid=12312020&components=12317568&issuetype=1&priority=3[JBoss JIRA Issue tracker]. The project and component is *FORGEPLUGINS* and *AngularJS Scaffold* respectively. We also track feature requests in the same space.
+We use GitHub issues for issue tracking.
