@@ -152,9 +152,9 @@ $ scaffold-generate --provider ExtJS5 --targets org.hello.extjs.model.Customer
 
 This app can now be deployed to JBoss EAP.
 
-== hello-extjs screen shot
+== hello-extjs 
 
-![hello-extjs screen shot](https://raw.githubusercontent.com/LemonSoftware/extjs-addon/webpage/hello-extjs-screen.png)
+image:https://raw.githubusercontent.com/LemonSoftware/extjs-addon/webpage/hello-extjs-screen.png[hello-extjs browser screen shot]
 
 == Issue Tracker
 
