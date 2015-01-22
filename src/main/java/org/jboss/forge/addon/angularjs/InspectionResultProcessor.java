@@ -168,6 +168,14 @@ public class InspectionResultProcessor
       {
          propertyAttributes.put(TYPE, "number");
       }
+
+      if ( propertyType.equals(int.class.getName())
+              || propertyType.equals(long.class.getName())
+              || propertyType.equals(Integer.class.getName()) || propertyType.equals(Long.class.getName()))
+      {
+         propertyAttributes.put(TYPE, "integer");
+      }
+
       if (propertyType.equals(boolean.class.getName()) || propertyType.equals(Boolean.class.getName()))
       {
          propertyAttributes.put(TYPE, "boolean");

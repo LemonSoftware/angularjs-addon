@@ -9,6 +9,10 @@
     <#elseif property.type == "number">
         <#assign columnType = "numbercolumn">
         <#assign editorType = "numberfield">
+    <#elseif property.type == "integer">
+        <#assign columnType = "numbercolumn">
+        <#assign editorType = "numberfield">
+        <#assign renderer = "numberRenderer('0')">
     <#elseif property.type == "boolean">
         <#assign columnType = "checkcolumn">
         <#assign editorType = "checkbox">
@@ -21,6 +25,7 @@ flex: 1,
     xtype: '${columnType}',
     </#if>
     <#if format ??> format:'${format}', </#if> <#t />
+    <#if renderer ??> renderer: Ext.util.Format.${renderer}, </#if> <#t />
 editor: {
     <#if editorType ??>
     xtype:'${editorType}',
